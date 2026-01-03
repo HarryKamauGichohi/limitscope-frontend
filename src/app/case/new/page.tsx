@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, getApiUrl } from "@/lib/api";
 
 export default function NewCasePage() {
     const router = useRouter();
@@ -104,8 +104,9 @@ export default function NewCasePage() {
                         uploadFormData.append("fileType", fileType);
 
                         // Using direct fetch for FormData because apiRequest might be configured for JSON
+                        const baseUrl = getApiUrl().replace('/api', '');
                         uploadPromises.push(
-                            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/uploads`, {
+                            fetch(`${baseUrl}/api/uploads`, {
                                 method: "POST",
                                 body: uploadFormData,
                                 credentials: "include",

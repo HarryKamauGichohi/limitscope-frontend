@@ -1,4 +1,22 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Use environment variable, otherwise detect current protocol and host for mobile/production
+const getBaseApiUrl = () => {
+    if (process.env.NEXT_PUBLIC_API_URL) {
+        return process.env.NEXT_PUBLIC_API_URL;
+    }
+
+    if (typeof window !== 'undefined') {
+        const protocol = window.location.protocol; // http: or https:
+        const hostname = window.location.hostname;
+        // Use same protocol as frontend for consistency
+        return `${protocol}//${hostname}:5000/api`;
+    }
+
+    return 'http://localhost:5000/api';
+};
+
+const API_URL = getBaseApiUrl();
+
+export const getApiUrl = () => API_URL;
 
 export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_URL}${endpoint}`;

@@ -15,7 +15,11 @@ import { Input, Button } from "@/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 
-export default function ChatView() {
+interface ChatViewProps {
+    selectedUserId?: string | null;
+}
+
+export default function ChatView({ selectedUserId }: ChatViewProps) {
     const [users, setUsers] = useState<any[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [messages, setMessages] = useState<any[]>([]);
@@ -45,7 +49,7 @@ export default function ChatView() {
 
     const fetchMessages = async (userId: string) => {
         try {
-            const res = await apiRequest(`/chat/messages/${userId}`);
+            const res = await apiRequest(`/chat/user/${userId}/messages`);
             setMessages(res.data || []);
         } catch (err) {
             console.error("Failed to fetch messages", err);
@@ -54,7 +58,18 @@ export default function ChatView() {
 
     useEffect(() => {
         fetchUsers();
+        const interval = setInterval(fetchUsers, 10000); // Check for new users/messages every 10s
+        return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        if (selectedUserId && users.length > 0) {
+            const user = users.find(u => u.id === selectedUserId);
+            if (user) {
+                setSelectedUser(user);
+            }
+        }
+    }, [selectedUserId, users]);
 
     useEffect(() => {
         if (selectedUser) {
@@ -70,7 +85,7 @@ export default function ChatView() {
 
         setSending(true);
         try {
-            const res = await apiRequest(`/chat/messages/${selectedUser.id}`, {
+            const res = await apiRequest(`/chat/user/${selectedUser.id}/messages`, {
                 method: "POST",
                 body: JSON.stringify({ content: newMessage })
             });
@@ -103,10 +118,16 @@ export default function ChatView() {
                         [1, 2, 3, 4, 5].map((i) => (
                             <div key={i} className="h-16 bg-[var(--muted)]/20 rounded-xl animate-pulse mx-2 mb-2" />
                         ))
-                    ) : users.length === 0 ? (
+                    ) : users.filter(u =>
+                        u.email?.toLowerCase().includes(search.toLowerCase()) ||
+                        `${u.firstName} ${u.lastName}`.toLowerCase().includes(search.toLowerCase())
+                    ).length === 0 ? (
                         <p className="text-center py-8 text-xs text-[var(--muted-foreground)] font-medium">No results found.</p>
                     ) : (
-                        users.map((user) => (
+                        users.filter(u =>
+                            u.email?.toLowerCase().includes(search.toLowerCase()) ||
+                            `${u.firstName} ${u.lastName}`.toLowerCase().includes(search.toLowerCase())
+                        ).map((user) => (
                             <button
                                 key={user.id}
                                 onClick={() => setSelectedUser(user)}
@@ -119,8 +140,15 @@ export default function ChatView() {
                                     }`}>
                                     <UserIcon size={20} className={selectedUser?.id === user.id ? "text-white" : "text-[var(--primary)]"} />
                                 </div>
-                                <div className="text-left overflow-hidden">
-                                    <p className="font-bold text-sm truncate">{user.firstName ? `${user.firstName} ${user.lastName}` : user.email}</p>
+                                <div className="text-left overflow-hidden flex-grow">
+                                    <div className="flex items-center justify-between">
+                                        <p className="font-bold text-sm truncate">{user.firstName ? `${user.firstName} ${user.lastName}` : user.email}</p>
+                                        {user._count?.messages > 0 && (
+                                            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-pulse font-black">
+                                                {user._count.messages}
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="flex items-center gap-1 opacity-70">
                                         <Circle fill="currentColor" size={6} className={selectedUser?.id === user.id ? "text-white" : "text-green-500"} />
                                         <p className="text-[10px] font-bold uppercase tracking-tighter">Available</p>

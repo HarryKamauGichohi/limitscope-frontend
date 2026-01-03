@@ -100,3 +100,66 @@ body {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+
+  /* Larger touch targets for mobile */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better mobile spacing */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Responsive font sizes */
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  /* Mobile-friendly forms */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Touch-friendly hover states */
+@media (hover: none) and (pointer: coarse) {
+
+  button:hover,
+  a:hover {
+    /* Remove hover effects on touch devices */
+    transform: none;
+  }
+
+  button:active,
+  a:active {
+    /* Add active/press effects instead */
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}

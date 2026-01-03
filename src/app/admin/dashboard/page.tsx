@@ -11,13 +11,19 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("overview");
+    const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
+
+    const handleOpenChat = (userId: string) => {
+        setSelectedChatUserId(userId);
+        setActiveTab("chat");
+    };
 
     const renderContent = () => {
         switch (activeTab) {
             case "overview": return <Overview />;
-            case "cases": return <CasesView />;
-            case "users": return <UsersView />;
-            case "chat": return <ChatView />;
+            case "cases": return <CasesView onOpenChat={handleOpenChat} />;
+            case "users": return <UsersView onOpenChat={handleOpenChat} />;
+            case "chat": return <ChatView selectedUserId={selectedChatUserId} />;
             case "settings": return <SettingsView />;
             default: return <Overview />;
         }
