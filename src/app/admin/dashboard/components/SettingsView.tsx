@@ -102,8 +102,8 @@ export default function SettingsView() {
 
                         {status?.type === 'email' && (
                             <div className={`p-4 rounded-2xl text-xs font-bold border flex items-center gap-3 ${status.status === 'success'
-                                    ? "bg-green-50 text-green-700 border-green-200"
-                                    : "bg-red-50 text-red-700 border-red-200"
+                                ? "bg-green-50 text-green-700 border-green-200"
+                                : "bg-red-50 text-red-700 border-red-200"
                                 }`}>
                                 {status.status === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                                 {status.message}
@@ -158,8 +158,8 @@ export default function SettingsView() {
 
                         {status?.type === 'password' && (
                             <div className={`p-4 rounded-2xl text-xs font-bold border flex items-center gap-3 ${status.status === 'success'
-                                    ? "bg-green-50 text-green-700 border-green-200"
-                                    : "bg-red-50 text-red-700 border-red-200"
+                                ? "bg-green-50 text-green-700 border-green-200"
+                                : "bg-red-50 text-red-700 border-red-200"
                                 }`}>
                                 {status.status === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                                 {status.message}

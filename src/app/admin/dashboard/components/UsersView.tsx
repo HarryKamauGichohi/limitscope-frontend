@@ -9,13 +9,18 @@ import {
     MessageSquare,
     ChevronRight,
     Loader2,
-    Shield
+    Shield,
+    Circle
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { Input, Button } from "@/components/ui";
 import { format } from "date-fns";
 
-export default function UsersView() {
+interface UsersViewProps {
+    onOpenChat?: (userId: string) => void;
+}
+
+export default function UsersView({ onOpenChat }: UsersViewProps) {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -102,11 +107,15 @@ export default function UsersView() {
                                         <span className="text-[10px] text-[var(--muted-foreground)]">managed</span>
                                     </div>
                                 </div>
-                                <div className="p-3 bg-[var(--muted)]/30 rounded-2xl border border-[var(--border)]">
-                                    <p className="text-[10px] font-bold text-[var(--muted-foreground)] uppercase tracking-widest mb-1">Status</p>
-                                    <p className={`text-xs font-bold uppercase tracking-tighter ${user.accountStatus === 'ACTIVE' ? 'text-green-600' : 'text-amber-600'}`}>
-                                        {user.accountStatus}
-                                    </p>
+                                <div className={`p-3 rounded-2xl border ${user._count.messages > 0 ? 'bg-[var(--primary)]/10 border-[var(--primary)]/30 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]' : 'bg-[var(--muted)]/30 border-[var(--border)]'}`}>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <p className="text-[10px] font-bold text-[var(--muted-foreground)] uppercase tracking-widest">Messages</p>
+                                        {user._count.messages > 0 && <Circle size={6} fill="currentColor" className="text-[var(--primary)] animate-pulse" />}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <p className={`text-xl font-bold ${user._count.messages > 0 ? 'text-[var(--primary)]' : ''}`}>{user._count.messages || 0}</p>
+                                        <span className="text-[10px] text-[var(--muted-foreground)]">received</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -118,6 +127,7 @@ export default function UsersView() {
                                 <Button
                                     variant="secondary"
                                     size="sm"
+                                    onClick={() => onOpenChat?.(user.id)}
                                     className="rounded-xl font-bold text-xs h-9 bg-white border shadow-sm hover:bg-[var(--primary)] hover:text-white group/btn"
                                 >
                                     <MessageSquare size={14} className="group-hover/btn:scale-110 transition-transform" />

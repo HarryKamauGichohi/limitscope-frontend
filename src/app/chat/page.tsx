@@ -16,13 +16,14 @@ import { apiRequest } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useParams, useRouter } from "next/navigation";
-
-export default function ClientChatPage() {
+export default function UnifiedChatPage() {
     const { user } = useAuth();
-    const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const caseId = searchParams.get("caseId");
+
     const [messages, setMessages] = useState<any[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [loading, setLoading] = useState(true);
@@ -39,7 +40,8 @@ export default function ClientChatPage() {
 
     const fetchMessages = async () => {
         try {
-            const res = await apiRequest(`/chat/case/${params.id}/messages`);
+            // Fetch all messages for this user (the backend ChatService handles the cross-case unification)
+            const res = await apiRequest(`/chat/messages`);
             setMessages(res.data || []);
             setLoading(false);
         } catch (err) {
@@ -48,12 +50,10 @@ export default function ClientChatPage() {
     };
 
     useEffect(() => {
-        if (params.id) {
-            fetchMessages();
-            const interval = setInterval(fetchMessages, 5000);
-            return () => clearInterval(interval);
-        }
-    }, [params.id]);
+        fetchMessages();
+        const interval = setInterval(fetchMessages, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,9 +61,13 @@ export default function ClientChatPage() {
 
         setSending(true);
         try {
-            const res = await apiRequest(`/chat/case/${params.id}/messages`, {
+            // We can pass caseId if we have it for context on the backend, but it's not required for route matching now
+            const res = await apiRequest(`/chat/messages`, {
                 method: "POST",
-                body: JSON.stringify({ content: newMessage })
+                body: JSON.stringify({
+                    content: newMessage,
+                    caseId: caseId || undefined
+                })
             });
             setMessages([...messages, res.data]);
             setNewMessage("");
@@ -122,7 +126,7 @@ export default function ClientChatPage() {
                                 </div>
                                 <div>
                                     <h4 className="text-sm font-black uppercase tracking-widest mb-2">Secure Message Initialized</h4>
-                                    <p className="text-xs font-medium leading-relaxed">Send a message to speak directly with an advisor regarding your case or limitation status.</p>
+                                    <p className="text-xs font-medium leading-relaxed">Send a message to speak directly with an advisor regarding your account status.</p>
                                 </div>
                             </div>
                         ) : (

@@ -13,7 +13,7 @@ const Navbar = () => {
     const navLinks = [
         { name: "Home", href: "/" },
         { name: "About", href: "/about" },
-        ...(user ? [{ name: "Dashboard", href: "/dashboard" }] : []),
+        ...(user ? [{ name: "Dashboard", href: user.isAdmin ? "/admin/dashboard" : "/dashboard" }] : []),
         ...(user?.isAdmin ? [{ name: "Admin Settings", href: "/admin-settings" }] : []),
     ];
 

@@ -183,14 +183,12 @@ export default function DashboardPage() {
                                                         Recovery Steps <FileText size={14} />
                                                     </Link>
 
-                                                    {c.isPaid && (
-                                                        <Link
-                                                            href={`/case/${c.id}/chat`}
-                                                            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:scale-105 transition-all shadow-md"
-                                                        >
-                                                            Chat with Advisor <Plus size={14} />
-                                                        </Link>
-                                                    )}
+                                                    <Link
+                                                        href={`/chat?caseId=${c.id}`}
+                                                        className="inline-flex items-center gap-2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:scale-105 transition-all shadow-md"
+                                                    >
+                                                        Chat with Advisor <Plus size={14} />
+                                                    </Link>
                                                 </div>
 
                                                 <Link
@@ -262,7 +260,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="bg-[var(--primary)] rounded-3xl p-6 text-white shadow-[var(--shadow-elevated)] group hover:scale-[1.02] transition-transform duration-200">
-                        <Link href="/dashboard/chat" className="flex flex-col items-center gap-4">
+                        <Link href="/chat" className="flex flex-col items-center gap-4">
                             <motion.div
                                 animate={{ y: [0, -5, 0] }}
                                 transition={{ repeat: Infinity, duration: 2 }}

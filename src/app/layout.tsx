@@ -9,6 +9,18 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "PayPal Compliance Advisory | Account Limitation Help",
   description: "Expert guidance for PayPal account limitations, fund recovery, and compliant resolution steps.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  themeColor: "#112945",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "PayPal Advisory",
+  },
 };
 
 export default function RootLayout({
