@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  /* Navy Blue Palette */
+  --color-navy-900: #0a1929;
+  --color-navy-800: #0d2137;
+  --color-navy-700: #112945;
+  --color-navy-600: #1a3a5c;
+  --color-navy-500: #234b73;
+  --color-navy-400: #2c5c8a;
+  --color-navy-50: #e8f4fc;
+
+  /* Teal Palette */
+  --color-teal-600: #0d9488;
+  --color-teal-500: #14b8a6;
+  --color-teal-400: #2dd4bf;
+  --color-teal-300: #5eead4;
+  --color-teal-100: #ccfbf1;
+  --color-teal-50: #f0fdfa;
+
+  /* Grey Palette */
+  --color-grey-50: #f9fafb;
+  --color-grey-100: #f3f4f6;
+  --color-grey-200: #e5e7eb;
+  --color-grey-300: #d1d5db;
+  --color-grey-400: #9ca3af;
+  --color-grey-500: #6b7280;
+  --color-grey-600: #4b5563;
+  --color-grey-700: #374151;
+  --color-grey-800: #1f2937;
+  --color-grey-900: #111827;
+
+  /* Yellow Palette */
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+
+  /* Semantic tokens */
+  --background: var(--color-yellow-50);
+  --foreground: var(--color-grey-900);
+  --surface: var(--color-yellow-100);
+  --card: var(--color-yellow-50);
+  --primary: var(--color-navy-700);
+  --primary-hover: var(--color-navy-600);
+  --primary-foreground: #ffffff;
+  --accent: var(--color-teal-600);
+  --accent-hover: var(--color-teal-500);
+  --accent-foreground: #ffffff;
+  --muted: var(--color-yellow-100);
+  --muted-foreground: var(--color-grey-500);
+  --border: var(--color-yellow-200);
+  --ring: var(--color-teal-500);
+
+  /* Status colors */
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -4px rgba(10, 25, 41, 0.08);
+  --shadow-elevated: 0 8px 30px -6px rgba(10, 25, 41, 0.12);
+  --shadow-card: 0 1px 3px 0 rgba(10, 25, 41, 0.05), 0 1px 2px -1px rgba(10, 25, 41, 0.05);
+  --shadow-button: 0 4px 14px -3px rgba(13, 148, 136, 0.25);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Custom scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-yellow-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-yellow-300);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-yellow-400);
+}
+
+/* Restrained motion defaults */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
