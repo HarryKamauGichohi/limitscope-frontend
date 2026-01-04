@@ -7,7 +7,13 @@ const getBaseApiUrl = () => {
     if (typeof window !== 'undefined') {
         const protocol = window.location.protocol; // http: or https:
         const hostname = window.location.hostname;
-        // Use same protocol as frontend for consistency
+
+        // In production (limitscope.xyz), usually we don't use port 5000 in the URL
+        if (hostname.includes('limitscope.xyz')) {
+            return `${protocol}//${hostname}/api`;
+        }
+
+        // Use same protocol as frontend for consistency in dev
         return `${protocol}//${hostname}:5000/api`;
     }
 
