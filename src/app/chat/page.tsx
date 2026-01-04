@@ -9,11 +9,11 @@ import {
     Loader2,
     UserIcon,
     Circle,
-    Lock
+    Lock,
 } from "lucide-react";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,7 +22,9 @@ export default function UnifiedChatPage() {
     const { user } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const caseId = searchParams.get("caseId");
+
+    // Guard against build-time nulls
+    const caseId = typeof window !== "undefined" ? searchParams.get("caseId") : null;
 
     const [messages, setMessages] = useState<any[]>([]);
     const [newMessage, setNewMessage] = useState("");
@@ -40,7 +42,6 @@ export default function UnifiedChatPage() {
 
     const fetchMessages = async () => {
         try {
-            // Fetch all messages for this user (the backend ChatService handles the cross-case unification)
             const res = await apiRequest(`/chat/messages`);
             setMessages(res.data || []);
             setLoading(false);
@@ -61,13 +62,12 @@ export default function UnifiedChatPage() {
 
         setSending(true);
         try {
-            // We can pass caseId if we have it for context on the backend, but it's not required for route matching now
             const res = await apiRequest(`/chat/messages`, {
                 method: "POST",
                 body: JSON.stringify({
                     content: newMessage,
-                    caseId: caseId || undefined
-                })
+                    caseId: caseId || undefined,
+                }),
             });
             setMessages([...messages, res.data]);
             setNewMessage("");
@@ -83,12 +83,17 @@ export default function UnifiedChatPage() {
             <div className="w-full max-w-4xl flex flex-col h-[calc(100vh-160px)]">
                 {/* Header */}
                 <div className="mb-6 flex items-center justify-between">
-                    <Link href="/dashboard" className="flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors font-bold text-sm">
+                    <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors font-bold text-sm"
+                    >
                         <ArrowLeft size={16} /> Back to Dashboard
                     </Link>
                     <div className="flex items-center gap-2">
                         <Shield className="text-[var(--primary)]" size={18} />
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-40">End-to-End Encrypted Advisory Line</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-40">
+                            End-to-End Encrypted Advisory Line
+                        </span>
                     </div>
                 </div>
 
@@ -100,16 +105,22 @@ export default function UnifiedChatPage() {
                                 <UserIcon size={24} />
                             </div>
                             <div>
-                                <h3 className="font-black text-[var(--foreground)] tracking-tight">Compliance Advisor</h3>
+                                <h3 className="font-black text-[var(--foreground)] tracking-tight">
+                                    Compliance Advisor
+                                </h3>
                                 <div className="flex items-center gap-2">
                                     <Circle fill="currentColor" size={6} className="text-green-500 animate-pulse" />
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted-foreground)]">System Online</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                                        System Online
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         <div className="hidden md:flex flex-col items-end opacity-40">
                             <span className="text-[8px] font-black uppercase tracking-[0.3em]">Session ID</span>
-                            <span className="text-[10px] font-bold font-mono">#{user?.id?.slice(0, 8).toUpperCase()}</span>
+                            <span className="text-[10px] font-bold font-mono">
+                                #{user?.id?.slice(0, 8).toUpperCase()}
+                            </span>
                         </div>
                     </div>
 
@@ -125,8 +136,12 @@ export default function UnifiedChatPage() {
                                     <MessageSquare size={32} />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-black uppercase tracking-widest mb-2">Secure Message Initialized</h4>
-                                    <p className="text-xs font-medium leading-relaxed">Send a message to speak directly with an advisor regarding your account status.</p>
+                                    <h4 className="text-sm font-black uppercase tracking-widest mb-2">
+                                        Secure Message Initialized
+                                    </h4>
+                                    <p className="text-xs font-medium leading-relaxed">
+                                        Send a message to speak directly with an advisor regarding your account status.
+                                    </p>
                                 </div>
                             </div>
                         ) : (
@@ -137,12 +152,17 @@ export default function UnifiedChatPage() {
                                     key={msg.id}
                                     className={`flex ${msg.isAdminSender ? "justify-start" : "justify-end"}`}
                                 >
-                                    <div className={`max-w-[75%] p-5 rounded-3xl text-sm shadow-sm relative ${msg.isAdminSender
-                                        ? "bg-white border border-[var(--border)] text-[var(--foreground)] rounded-tl-none"
-                                        : "bg-[var(--primary)] text-white rounded-tr-none"
-                                        }`}>
+                                    <div
+                                        className={`max-w-[75%] p-5 rounded-3xl text-sm shadow-sm relative ${msg.isAdminSender
+                                            ? "bg-white border border-[var(--border)] text-[var(--foreground)] rounded-tl-none"
+                                            : "bg-[var(--primary)] text-white rounded-tr-none"
+                                            }`}
+                                    >
                                         <p className="font-medium leading-relaxed">{msg.content}</p>
-                                        <p className={`text-[9px] mt-2 font-black uppercase tracking-tighter opacity-50 ${msg.isAdminSender ? "text-left" : "text-right"}`}>
+                                        <p
+                                            className={`text-[9px] mt-2 font-black uppercase tracking-tighter opacity-50 ${msg.isAdminSender ? "text-left" : "text-right"
+                                                }`}
+                                        >
                                             {format(new Date(msg.createdAt), "h:mm a")}
                                         </p>
                                     </div>
